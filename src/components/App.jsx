@@ -1,18 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { nanoid } from "nanoid";
 import ContactForm from "./ContactForm/ContactForm";
 import ContactList from "./ContactList/ContactList";
 import Filter from "./Filter/Filter";
 import css from "./App.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "redux/filter/slice";
+import { addContact, deleteContact } from "redux/contacts/slice";
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState("");
+  const filter = useSelector(state => state.filter.filter);
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
   
-  useEffect(() => {
-    const parsedContacts = JSON.parse(localStorage.getItem("Contacts"));
-    parsedContacts ? setContacts(parsedContacts) : setContacts([]);
-  }, [])
+  // useEffect(() => {
+  //   const parsedContacts = JSON.parse(localStorage.getItem("Contacts"));
+  //   parsedContacts ? dispatch(???addContact(parsedContacts)) : dispatch(???addContact([]));
+  // }, [dispatch])
 
   useEffect(() => {
     localStorage.setItem("Contacts", JSON.stringify(contacts));
@@ -24,11 +28,11 @@ function App() {
       return;
     }
 
-    setContacts([...contacts, { id: nanoid(), name: name, number: number }]);
+    dispatch(addContact({ id: nanoid(), name: name, number: number }));
   }
 
   function handleFilter(evt) {
-    setFilter(evt.target.value);
+    dispatch(setFilter(evt.target.value))
   }
 
   function filterContacts() {
@@ -36,7 +40,7 @@ function App() {
   }
 
   function handleDelete(id) {
-    setContacts(contacts.filter(contact => contact.id !== id));
+    dispatch(deleteContact({ id: id }));
   }
 
   return (
