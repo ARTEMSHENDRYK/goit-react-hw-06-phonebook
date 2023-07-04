@@ -2,8 +2,6 @@ import PropTypes from "prop-types";
 import css from "./Filter.module.css";
 
 function Filter({ filter, onFilter }) {
-    console.log(filter);
-
   return (
     <div className={css.container}>
       <h3 className={css.title}>Find contacts by name</h3>
