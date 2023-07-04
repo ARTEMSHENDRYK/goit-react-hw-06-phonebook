@@ -13,9 +13,7 @@ function App() {
   const dispatch = useDispatch();
 
   function handleSubmit(name, number) {
-    console.log(contacts);
-    console.log(contacts.length);
-
+  
     if (contacts.some(contact => contact.name.toLowerCase() === name.toLowerCase())) {
       alert(`${name} is already in contacts.`);
       return;
