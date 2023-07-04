@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { nanoid } from "nanoid";
 import ContactForm from "./ContactForm/ContactForm";
 import ContactList from "./ContactList/ContactList";
@@ -9,20 +8,14 @@ import { setFilter } from "redux/filter/slice";
 import { addContact, deleteContact } from "redux/contacts/slice";
 
 function App() {
-  const filter = useSelector(state => state.filter.filter);
-  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter.query);
+  const contacts = useSelector(state => state.storage.contacts);
   const dispatch = useDispatch();
-  
-  // useEffect(() => {
-  //   const parsedContacts = JSON.parse(localStorage.getItem("Contacts"));
-  //   parsedContacts ? dispatch(???addContact(parsedContacts)) : dispatch(???addContact([]));
-  // }, [dispatch])
 
-  useEffect(() => {
-    localStorage.setItem("Contacts", JSON.stringify(contacts));
-  }, [contacts])
-  
   function handleSubmit(name, number) {
+    console.log(contacts);
+    console.log(contacts.length);
+
     if (contacts.some(contact => contact.name.toLowerCase() === name.toLowerCase())) {
       alert(`${name} is already in contacts.`);
       return;
