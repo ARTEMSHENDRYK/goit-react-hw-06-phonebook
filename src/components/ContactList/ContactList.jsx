@@ -1,37 +1,47 @@
-import PropTypes from "prop-types";
 import ContactElement from "components/ContactElement/ContactElement";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteContact } from "redux/contacts/slice";
 import css from "./ContactList.module.css";
 
-function ContactList({ contacts, onDelete }) {
-  return (
-    <div className={css.container}>
-      <ul>
-        {contacts.map(({ id, name, number }) => {
-          return (
-            <li className={css.list} key={id}>
-              <ContactElement
-                id={id}
-                name={name}
-                number={number}
-                onDelete={onDelete}
-              />
-            </li>
-          );  
-        })}
-      </ul>
-    </div>
-  )
-}
+function ContactList() {
+  const filter = useSelector(state => state.filter.query);
+  const contacts = useSelector(state => state.storage.contacts);
+  const dispatch = useDispatch();
 
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onDelete: PropTypes.func,
+  function filterContacts() {
+    return contacts.filter(({ name }) => name.toLowerCase().includes(filter.toLowerCase()))
+  }
+
+  function handleDelete(id) {
+    dispatch(deleteContact({ id: id }));
+  }
+
+  return (
+    <>
+    {contacts.length > 0
+      ? (
+        <div className={css.container}>
+          <ul>
+            {filterContacts().map(({ id, name, number }) => {
+              return (
+                <li className={css.list} key={id}>
+                  <ContactElement
+                    id={id}
+                    name={name}
+                    number={number}
+                    onDelete={handleDelete}
+                  />
+                </li>
+              );  
+            })}
+          </ul>
+        </div>
+        )
+        :
+        (<p className={css.title}>There are no contacts.</p>)    
+      }
+      </>
+  )
 }
 
 export default ContactList;
